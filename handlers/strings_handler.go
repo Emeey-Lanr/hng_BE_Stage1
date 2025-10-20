@@ -1,34 +1,33 @@
 package handlers
 
 import (
-	"errors"
 	"net/http"
 	"stage1/models"
+	"stage1/services"
 	"stage1/utils"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator"
+	// "github.com/go-playground/validator"
+	// "log"
 )
 
 func AddAndAnalyseString(c *gin.Context){
-	var stringValue models.StringValue
+	var req models.StringValue
  
-	if err := c.ShouldBindJSON(&stringValue); err != nil{
-
-     var validate validator.ValidationErrors
-
-	//  bad request body missing value
-	if errors.As(err, &validate){
-      utils.ErrorResponse(c, http.StatusBadRequest, `Invalid request body or missing "value" field`)
-	 return
+	if err := c.ShouldBindJSON(&req); err != nil{
+     services.RequestError(c, err)
 	}
 
-	// if value is not string
-	utils.ErrorResponse(c, http.StatusUnprocessableEntity, `Invalid data type for "value" (must be string)`)
-	return
+	hashedValue := services.CreateSHA256Hash(req.Value)
 
+	_, exist :=  models.DB[hashedValue]
+
+	if exist{
+		utils.ErrorResponse(c, http.StatusConflict, "String already exist in the system")
+		return
 	}
 
+	
 
 
 }
