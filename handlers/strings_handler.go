@@ -76,7 +76,25 @@ func GetSpecificString (c * gin.Context) {
 
 
 
-func GetStringsThroughQuery ()
+func GetStringsThroughQuery (c *gin.Context) {
+	
+	var queryData models.StringFiltering 
+
+	if err := c.ShouldBindQuery(&queryData); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid query parameter values or types")
+	}
+  
+	// filter using query
+	dataFound := services.Filter(queryData)
+	 
+	response := models.GetStringsThroughQueryResponse{Data: dataFound, Count: len(dataFound),Filters_Applied: queryData}
+	
+	utils.SuccessResponse(c, http.StatusOK, response)
+
+
+}
+
+func Filter
 
 
 

@@ -3,7 +3,8 @@ package services
 import (
 	"crypto/sha256"
 	"fmt"
-	
+	"stage1/models"
+
 	"strings"
 	"unicode"
 )
@@ -71,4 +72,25 @@ func UniqueCharacter (value string) (map[string]int, int) {
 	 }
 
    return uniCha, len(uniCha)
+ }
+
+
+
+
+ func Filter (query models.StringFiltering) []models.Data{
+	
+    var result []models.Data
+
+	for _, val := range models.DB {
+       palindrome := val.Properties.Is_Palindrome == *query.Is_Palindrome
+	   length := val.Properties.Length >= *query.Min_Length && val.Properties.Length <= *query.Max_Length
+	   word_count := val.Properties.Word_Count == *query.Word_Count
+	   _, contains_characters := val.Properties.Character_Frequency[strings.ToLower(*query.Contains_Character)]
+
+	   if palindrome && length && word_count && contains_characters {
+         result = append(result, val)
+	   }
+	}
+
+	return result
  }
