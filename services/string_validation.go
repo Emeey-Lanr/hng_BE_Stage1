@@ -100,7 +100,7 @@ queryBox["is_palindrome"] = true
 		queryBox["is_palindrome"] = true
 
 		splitedQuery := strings.Split(query, " ") //split query to contain only one index of first vowel, second, etc
-		     fmt.Println(splitedQuery, len(splitedQuery), splitedQuery[0], "--",splitedQuery[1]) 
+		   
 	  data, exist := vowel[fmt.Sprintf("%s %s", splitedQuery[5], splitedQuery[6])] // if the val of the ending word is first, second, third vowel, etc
 
 				   if !exist{
@@ -122,17 +122,20 @@ queryBox["is_palindrome"] = true
 
 	//Query 4 checks if it contains  any ch
 	if strings.Contains(query, "strings containing the letter"){
-		splitedQuery := strings.Split(query, "") // split string to check if it has a letter
+		splitedQuery := strings.Split(query, " ") // split string to check if it has a letter
 
-	    for i := 0; i < len(letter); i++{  // loop throught to check the letter
-            if letter[i] ==  splitedQuery [len(splitedQuery) - 1]{
-                queryBox["contains_character"] = letter[i] 
+		fmt.Println(splitedQuery[len(splitedQuery) - 1])
+
+		for _, val := range letter{
+			 if splitedQuery[len(splitedQuery) - 1] == val   {
+                queryBox["contains_character"] = val
 				*numb = 4
 				break
-			}else{
-				  return queryBox,0,  fmt.Errorf("Query Passed but resulted in conflicting filters")
-			}
+			 }else{
+				return queryBox,0,  fmt.Errorf("Query Passed but resulted in conflicting filters")
+			 }	
 		}
+	  
 	}
 
 

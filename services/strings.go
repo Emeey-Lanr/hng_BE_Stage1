@@ -105,7 +105,7 @@ func FilterThroughNaturalLanguage (filter map[string]interface{}, numb int)([]mo
 
 
 	if numb == 1{
-		wordCount :=  filter["word_count"].(float64)
+		wordCount :=  filter["word_count"].(int)
 		if val.Properties.Is_Palindrome && val.Properties.Word_Count == int(wordCount) {
 			result = append(result, val)
 			return result
@@ -113,7 +113,7 @@ func FilterThroughNaturalLanguage (filter map[string]interface{}, numb int)([]mo
 	} 
 
 	if numb == 2 {
-		length := filter["min_length"].(float64)
+		length := filter["min_length"].(int)
        if val.Properties.Length >= int(length){
 		result = append(result, val)
 		return result

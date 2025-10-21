@@ -4,11 +4,11 @@ A RESTful API service that analyses strings and stores their computed properties
 
 ### Getting Started
 ```bash
-git clone url
+git clone https://github.com/Emeey-Lanr/hng_BE_Stage1.git
 ```
 
 ```bash
-cd 
+cd hng_BE_Stage1
 ```
 
 Endpoints 
@@ -86,6 +86,9 @@ Success Response (201) Ok
 }
 ```
 
+
+
+### 3
 
 
 
