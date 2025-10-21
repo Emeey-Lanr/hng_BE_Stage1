@@ -32,12 +32,12 @@ func RequestError (c *gin.Context, err error){
 }
 
 
-func IfStringExist (value string) (bool, models.Data){
+func IfStringExist (value string) (bool, models.Data, int){
 
-  for _, val := range models.DB {
+  for id, val := range models.DB {
 	if strings.ToLower(val.Value) == strings.ToLower(value) {
-		return true, val
+		return true, val, id
 	}
   }
-  return false, models.Data{}
+  return false, models.Data{}, 0
 }

@@ -22,7 +22,7 @@ func AddAndAnalyseString(c *gin.Context){
 	hashedValue := services.CreateSHA256Hash(req.Value)
     
 	// chest if string exists in the in memory db
-	 exist, _ := services.IfStringExist(req.Value)
+	 exist, _, _ := services.IfStringExist(req.Value)
 
 	 if exist{
          utils.ErrorResponse(c, http.StatusConflict, "String already exists in the system")
@@ -61,9 +61,9 @@ func AddAndAnalyseString(c *gin.Context){
 
 
 func GetSpecificString (c * gin.Context) {
-  stringValue := c.Param("value")
+  stringValue := c.Param("string_value")
  
-  exist, value := services.IfStringExist(stringValue)
+  exist, value, _ := services.IfStringExist(stringValue)
   
   if !exist {
 	utils.ErrorResponse(c, http.StatusNotFound, "String does not exist in the system")
@@ -71,5 +71,28 @@ func GetSpecificString (c * gin.Context) {
   }
 
   utils.SuccessResponse(c, http.StatusOK, value)
+
+}
+
+
+
+func GetStringsThroughQuery ()
+
+
+
+func DeleteSpecificString (c *gin.Context){
+	stringValue := c.Param("string_value")
+
+	exist, _, id := services.IfStringExist(stringValue)
+
+	if !exist {
+	utils.ErrorResponse(c, http.StatusNotFound, "String does not exist in the system")
+	return
+  }
+	 
+	models.DB = append(models.DB[:id], models.DB[id+1:]... )
+
+	
+  utils.SuccessResponse(c, http.StatusNoContent, models.Data{})
 
 }
