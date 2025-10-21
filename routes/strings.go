@@ -8,4 +8,5 @@ import (
 
 func StringRoutes (r *gin.Engine) {
 	r.POST("/strings", handlers.AddAndAnalyseString)
+	r.GET("/strings/:value", handlers.GetSpecificString)
 }

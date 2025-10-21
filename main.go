@@ -18,7 +18,7 @@ func main (){
 	 if err := godotenv.Load(); err != nil{
 		log.Println("Error loading .env", err.Error())
 	 }
-
+  
     
    routes.StringRoutes(r) // string routes
 

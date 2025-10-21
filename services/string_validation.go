@@ -1,13 +1,14 @@
 package services
 
-
-
 import (
-		"encoding/json"
-		"errors"
+	"encoding/json"
+	"errors"
 	"net/http"
+	"stage1/models"
 	"stage1/utils"
-		"github.com/gin-gonic/gin"
+	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 
@@ -28,4 +29,15 @@ func RequestError (c *gin.Context, err error){
     
 
 
+}
+
+
+func IfStringExist (value string) (bool, models.Data){
+
+  for _, val := range models.DB {
+	if strings.ToLower(val.Value) == strings.ToLower(value) {
+		return true, val
+	}
+  }
+  return false, models.Data{}
 }
