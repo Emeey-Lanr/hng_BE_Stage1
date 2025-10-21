@@ -4,7 +4,6 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"stage1/models"
-
 	"strings"
 	"unicode"
 )
@@ -94,3 +93,46 @@ func UniqueCharacter (value string) (map[string]int, int) {
 
 	return result
  }
+
+
+func FilterThroughNaturalLanguage (filter map[string]interface{}, numb int)([]models.Data){
+
+  var result []models.Data
+
+
+
+  for _, val := range models.DB {
+
+
+	if numb == 1{
+		wordCount :=  filter["word_count"].(float64)
+		if val.Properties.Is_Palindrome && val.Properties.Word_Count == int(wordCount) {
+			result = append(result, val)
+			return result
+		}
+	} 
+
+	if numb == 2 {
+		length := filter["min_length"].(float64)
+       if val.Properties.Length >= int(length){
+		result = append(result, val)
+		return result
+	   }
+	}
+
+	if numb == 3 || numb == 4 {
+        letter :=  filter["contains_character"].(string)
+		_, exist := val.Properties.Character_Frequency[letter]
+
+		if val.Properties.Is_Palindrome && exist {
+			result = append(result, val)
+			return result
+		}
+	}
+
+	
+  }
+
+  return result
+
+}

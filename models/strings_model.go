@@ -45,3 +45,22 @@ type GetStringsThroughQueryResponse struct{
 	Count int `json:"count"`
 	Filters_Applied StringFiltering `json:"filters_applied"`
 }
+
+
+
+
+
+
+
+
+type InterpretedQuery  struct {
+	Original string `json:"orginal"`
+	Parsed_Filter interface{} `json:"parsed_filters"`
+}
+
+
+type NaturalLanguageResponse struct {
+	Data []Data `json:"data"`
+	Count int `json:"count"`
+	Interpreted_Query InterpretedQuery `json:"interpreted_query"`
+}

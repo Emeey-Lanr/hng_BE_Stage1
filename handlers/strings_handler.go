@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"stage1/models"
 	"stage1/services"
@@ -26,6 +27,7 @@ func AddAndAnalyseString(c *gin.Context){
 
 	 if exist{
          utils.ErrorResponse(c, http.StatusConflict, "String already exists in the system")
+		 return
 	 }
 
 	
@@ -82,6 +84,7 @@ func GetStringsThroughQuery (c *gin.Context) {
 
 	if err := c.ShouldBindQuery(&queryData); err != nil {
 		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid query parameter values or types")
+		return
 	}
   
 	// filter using query
@@ -94,7 +97,43 @@ func GetStringsThroughQuery (c *gin.Context) {
 
 }
 
-func Filter
+func FilterThroughNaturalLanguage (c *gin.Context){
+  query := c.Query("query")
+
+ if query == ""{
+		utils.ErrorResponse(c, http.StatusBadRequest, "Unable to parse natural query")
+		return
+ }
+
+ fmt.Println(query)
+
+  filter, numb, err := services.FilterThroughQuery(strings.ToLower(query)) // the query I will use for the search
+  
+  if err != nil {
+	utils.ErrorResponse(c, http.StatusUnprocessableEntity, err.Error())
+	return
+  }
+  
+
+  if len(filter) < 1 {
+	utils.ErrorResponse(c, http.StatusBadRequest, "Unable to parse natural query")
+	return
+  }
+
+
+  filterResult :=  services.FilterThroughNaturalLanguage(filter, numb) // the search result
+
+  if len(filterResult) < 1 {
+      utils.SuccessResponse(c, http.StatusNoContent, "")
+  }
+  
+  data := models.NaturalLanguageResponse{Data: filterResult,
+	 Count: len(filterResult), Interpreted_Query: models.InterpretedQuery{Original:query, Parsed_Filter: filter } }
+
+  utils.SuccessResponse(c, http.StatusOK, data)
+  
+
+}
 
 
 
