@@ -77,25 +77,46 @@ func GetSpecificString (c * gin.Context) {
 }
 
 
+func GetStringsThroughQuery(c *gin.Context) {
+    var queryData models.StringFiltering
 
-func GetStringsThroughQuery (c *gin.Context) {
-	
-	var queryData models.StringFiltering 
+    // Bind query parameters
+    if err := c.ShouldBindQuery(&queryData); err != nil {
+        utils.ErrorResponse(c, http.StatusBadRequest, "Invalid query parameter values or types")
+        return
+    }
 
-	if err := c.ShouldBindQuery(&queryData); err != nil {
-		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid query parameter values or types")
-		return
-	}
-  
-	// filter using query
-	dataFound := services.Filter(queryData)
-	 
-	response := models.GetStringsThroughQueryResponse{Data: dataFound, Count: len(dataFound),Filters_Applied: queryData}
-	
-	utils.SuccessResponse(c, http.StatusOK, response)
+    // Filter data
+    dataFound := services.Filter(queryData)
 
+    // Build filters_applied map dynamically
+    filtersApplied := make(map[string]interface{})
+    if queryData.Is_Palindrome != nil {
+        filtersApplied["is_palindrome"] = *queryData.Is_Palindrome
+    }
+    if queryData.Min_Length != nil {
+        filtersApplied["min_length"] = *queryData.Min_Length
+    }
+    if queryData.Max_Length != nil {
+        filtersApplied["max_length"] = *queryData.Max_Length
+    }
+    if queryData.Word_Count != nil {
+        filtersApplied["word_count"] = *queryData.Word_Count
+    }
+    if queryData.Contains_Character != nil && *queryData.Contains_Character != "" {
+        filtersApplied["contains_character"] = *queryData.Contains_Character
+    }
 
+    // Prepare response
+    response := gin.H{
+        "data":            dataFound,
+        "count":           len(dataFound),
+        "filters_applied": filtersApplied,
+    }
+
+    utils.SuccessResponse(c, http.StatusOK, response)
 }
+
 
 func FilterThroughNaturalLanguage (c *gin.Context){
   query := c.Query("query")
