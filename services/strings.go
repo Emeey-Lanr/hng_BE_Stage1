@@ -76,23 +76,44 @@ func UniqueCharacter (value string) (map[string]int, int) {
 
 
 
- func Filter (query models.StringFiltering) []models.Data{
-	
-    var result []models.Data
+ func Filter(query models.StringFiltering) []models.Data {
+	var result []models.Data
 
 	for _, val := range models.DB {
-       palindrome := val.Properties.Is_Palindrome == *query.Is_Palindrome
-	   length := val.Properties.Length >= *query.Min_Length && val.Properties.Length <= *query.Max_Length
-	   word_count := val.Properties.Word_Count == *query.Word_Count
-	   _, contains_characters := val.Properties.Character_Frequency[strings.ToLower(*query.Contains_Character)]
+		// Skip if Is_Palindrome filter is provided and doesn't match
+		if query.Is_Palindrome != nil && val.Properties.Is_Palindrome != *query.Is_Palindrome {
+			continue
+		}
 
-	   if palindrome && length && word_count && contains_characters {
-         result = append(result, val)
-	   }
+		// Skip if Min_Length is provided and string is shorter
+		if query.Min_Length != nil && val.Properties.Length < *query.Min_Length {
+			continue
+		}
+
+		// Skip if Max_Length is provided and string is longer
+		if query.Max_Length != nil && val.Properties.Length > *query.Max_Length {
+			continue
+		}
+
+		// Skip if Word_Count filter is provided and doesn't match
+		if query.Word_Count != nil && val.Properties.Word_Count != *query.Word_Count {
+			continue
+		}
+
+		// Skip if Contains_Character filter is provided and not found in string
+		if query.Contains_Character != nil {
+			char := strings.ToLower(*query.Contains_Character)
+			if _, exists := val.Properties.Character_Frequency[char]; !exists {
+				continue
+			}
+		}
+
+		// Passed all applicable filters → add to result
+		result = append(result, val)
 	}
 
 	return result
- }
+}
 
 
 func FilterThroughNaturalLanguage (filter map[string]interface{}, numb int)([]models.Data){
