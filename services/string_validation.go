@@ -120,25 +120,40 @@ queryBox["is_palindrome"] = true
 
 
 
-	//Query 4 checks if it contains  any ch
+	//Query 4 checks if it contains  a specific letter
 	if strings.Contains(query, "strings containing the letter"){
 		splitedQuery := strings.Split(query, " ") // split string to check if it has a letter
 
-		fmt.Println(splitedQuery[len(splitedQuery) - 1])
-
-		for _, val := range letter{
-			 if splitedQuery[len(splitedQuery) - 1] == val   {
-                queryBox["contains_character"] = val
-				*numb = 4
+		theLetterWeAreFinding :=	splitedQuery[len(splitedQuery) - 1]
+		
+		found := false
+		f := &found
+                            
+		for _, val :=  range letter{
+			 // i'm using a pointer because on the first index if not found,
+		//  else will trigger and break the loop if i use return
+			if val == theLetterWeAreFinding { 
+				*f = true 
 				break
-			 }else{
-				return queryBox,0,  fmt.Errorf("Query Passed but resulted in conflicting filters")
-			 }	
+			}else{
+				*f = false
+			}
+
 		}
-	  
+       
+		// if the letter is found
+		if found {
+			    queryBox["contains_character"] = splitedQuery[len(splitedQuery) - 1]
+				*numb = 4
+		}else{
+			return queryBox, 0, fmt.Errorf("Query Passed but resulted in conflicting filters")
+		}
+
+	
+
 	}
 
-
- return queryBox, queryNumb, nil	
+	
+ return queryBox, queryNumb, nil // returns an empty query box if none matches	
 	 
  }

@@ -146,6 +146,7 @@ func FilterThroughNaturalLanguage (c *gin.Context){
 
   if len(filterResult) < 1 {
       utils.SuccessResponse(c, http.StatusNoContent, "")
+      return
   }
   
   data := models.NaturalLanguageResponse{Data: filterResult,

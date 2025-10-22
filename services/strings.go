@@ -117,38 +117,45 @@ func UniqueCharacter (value string) (map[string]int, int) {
 
 
 func FilterThroughNaturalLanguage (filter map[string]interface{}, numb int)([]models.Data){
-
   var result []models.Data
 
 
 
   for _, val := range models.DB {
-
-
 	if numb == 1{
 		wordCount :=  filter["word_count"].(int)
 		if val.Properties.Is_Palindrome && val.Properties.Word_Count == int(wordCount) {
 			result = append(result, val)
-			return result
+		
 		}
 	} 
 
 	if numb == 2 {
 		length := filter["min_length"].(int)
-       if val.Properties.Length >= int(length){
+       if val.Properties.Length > int(length){
 		result = append(result, val)
-		return result
+	
 	   }
 	}
 
+	fmt.Println(numb)
 	if numb == 3 || numb == 4 {
-        letter :=  filter["contains_character"].(string)
+        letter :=  filter["contains_character"].(string) // the letter we want to search for if any of our data contains it
+		 fmt.Println(letter)
 		_, exist := val.Properties.Character_Frequency[letter]
-
-		if val.Properties.Is_Palindrome && exist {
+        
+		// if string only contains a particular letter
+		if exist && numb == 4{
 			result = append(result, val)
-			return result
+		
 		}
+
+		// but here if the string is palindrome and contains a vowel 
+		if  val.Properties.Is_Palindrome && exist {
+			result = append(result, val)
+			
+		}
+
 	}
 
 	
